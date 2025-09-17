@@ -1,4 +1,4 @@
-class Processo {
+public class Processo {
     int id;
     String nome;
     int prioridade; // 1 = Alta, 2 = Média, 3 = Baixa
