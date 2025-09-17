@@ -1,4 +1,4 @@
-class Scheduler {
+        public class Scheduler {
     ListaDeProcessos listaAlta;
     ListaDeProcessos listaMedia;
     ListaDeProcessos listaBaixa;
@@ -19,23 +19,36 @@ class Scheduler {
         else listaBaixa.adicionar(p);
     }
 
+    private void imprimirEstado() {
+        System.out.println("Filas:");
+        System.out.println("  Alta  : " + listaAlta.listarElementos());
+        System.out.println("  Media : " + listaMedia.listarElementos());
+        System.out.println("  Baixa : " + listaBaixa.listarElementos());
+        System.out.println("  Bloq. : " + listaBloqueados.listarElementos());
+    }
+
     public void executarCicloDeCPU() {
         if (!listaBloqueados.estaVazia()) {
             Processo desbloqueado = listaBloqueados.removerCabeca();
+            desbloqueado.jaBloqueado = false;
             adicionarProcesso(desbloqueado);
-            System.out.println("Desbloqueado: " + desbloqueado.nome);
+            System.out.println("Evento: Desbloqueado -> " + desbloqueado);
         }
+
+        imprimirEstado();
 
         Processo atual = null;
 
         if (contadorAlta >= 5) {
             if (!listaMedia.estaVazia()) {
                 atual = listaMedia.removerCabeca();
+                System.out.println("Regra anti-inanição: escolhida da média.");
             } else if (!listaBaixa.estaVazia()) {
                 atual = listaBaixa.removerCabeca();
+                System.out.println("Regra anti-inanição: escolhida da baixa.");
             }
             contadorAlta = 0;
-            } else {
+        } else {
             if (!listaAlta.estaVazia()) {
                 atual = listaAlta.removerCabeca();
                 contadorAlta++;
@@ -49,23 +62,24 @@ class Scheduler {
         }
 
         if (atual == null) {
-            System.out.println("Nenhum processo para executar.");
+            System.out.println("Nenhum processo para executar neste ciclo.");
             return;
         }
+
         if ("DISCO".equals(atual.recursoNecessario) && !atual.jaBloqueado) {
             atual.jaBloqueado = true;
             listaBloqueados.adicionar(atual);
-            System.out.println("Processo " + atual.nome + " bloqueado (DISCO).");
+            System.out.println("Evento: Processo bloqueado por recurso DISCO -> " + atual);
             return;
         }
 
+        System.out.println("Executando: " + atual);
         atual.ciclosNecessarios--;
-        System.out.println("Executando: " + atual.nome + " (Restam " + atual.ciclosNecessarios + " ciclos)");
 
-        if (atual.ciclosNecessarios > 0) {
-            adicionarProcesso(atual);
+        if (atual.ciclosNecessarios <= 0) {
+            System.out.println("Evento: Processo finalizado -> " + atual.nome);
         } else {
-            System.out.println("Processo " + atual.nome + " finalizado.");
+            adicionarProcesso(atual);
         }
     }
-}
+        }
