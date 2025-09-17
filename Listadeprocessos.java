@@ -1,4 +1,4 @@
-class ListaDeProcessos {
+public class ListaDeProcessos {
     Node cabeca;
     Node cauda;
 
@@ -29,5 +29,17 @@ class ListaDeProcessos {
 
     public boolean estaVazia() {
         return cabeca == null;
+    }
+
+    public String listarElementos() {
+        if (cabeca == null) return "[]";
+        StringBuilder sb = new StringBuilder();
+        Node atual = cabeca;
+        while (atual != null) {
+            sb.append(atual.processo.toString());
+            if (atual.proximo != null) sb.append(" -> ");
+            atual = atual.proximo;
+        }
+        return sb.toString();
     }
 }
