@@ -14,4 +14,11 @@ class Processo {
         this.recursoNecessario = recursoNecessario;
         this.jaBloqueado = false;
     }
+    
+    @Override
+    public String toString() {
+        return "[" + id + "-" + nome + "-P" + prioridade + "-C:" + ciclosNecessarios +
+               (recursoNecessario != null && !recursoNecessario.isEmpty() ? "-R:" + recursoNecessario : "") +
+               (jaBloqueado ? "-BLOQ" : "") + "]";
+    }
 }
